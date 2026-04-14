@@ -5,7 +5,7 @@ settings:
   excludeLinksFromLockfile: false
 
 overrides:
-  postcss: 8.5.8
+  postcss: 8.5.9
 
 importers:
 
@@ -474,7 +474,7 @@ importers:
         version: 4.0.15(vitest@4.1.0(@types/node@24.9.1)(happy-dom@20.8.9)(jsdom@27.4.0)(vite@8.0.5(@emnapi/core@1.9.0)(@emnapi/runtime@1.9.0)(@types/node@24.9.1)(esbuild@0.27.7)(jiti@2.6.1)(sass@1.70.0)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3)))
       autoprefixer:
         specifier: 10.4.27
-        version: 10.4.27(postcss@8.5.8)
+        version: 10.4.27(postcss@8.5.9)
       caniuse-lite:
         specifier: 1.0.30001778
         version: 1.0.30001778
@@ -518,8 +518,8 @@ importers:
         specifier: 0.20.0
         version: 0.20.0
       postcss:
-        specifier: 8.5.8
-        version: 8.5.8
+        specifier: 8.5.9
+        version: 8.5.9
       sass:
         specifier: 1.70.0
         version: 1.70.0
@@ -656,13 +656,13 @@ importers:
         version: 0.20.0
       tsup:
         specifier: 8.4.0
-        version: 8.4.0(jiti@2.6.1)(postcss@8.5.8)(tsx@4.21.0)(typescript@6.0.2)(yaml@2.8.3)
+        version: 8.4.0(jiti@2.6.1)(postcss@8.5.9)(tsx@4.21.0)(typescript@6.0.2)(yaml@2.8.3)
       typescript:
         specifier: 6.0.2
         version: 6.0.2
       vitest:
         specifier: 4.1.0
-        version: 4.1.0(@types/node@24.9.1)(happy-dom@20.8.9)(jsdom@27.4.0)(vite@8.0.5(@emnapi/core@1.9.0)(@emnapi/runtime@1.9.0)(@types/node@24.9.1)(esbuild@0.27.7)(jiti@2.6.1)(sass@1.98.0)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3))
+        version: 4.1.0(@types/node@24.9.1)(happy-dom@20.8.9)(jsdom@27.4.0)(vite@8.0.5(@emnapi/core@1.9.0)(@emnapi/runtime@1.9.0)(@types/node@24.9.1)(esbuild@0.25.11)(jiti@2.6.1)(sass@1.98.0)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3))
 
   packages/funbox:
     dependencies:
@@ -690,7 +690,7 @@ importers:
         version: 0.20.0
       tsup:
         specifier: 8.4.0
-        version: 8.4.0(jiti@2.6.1)(postcss@8.5.8)(tsx@4.21.0)(typescript@6.0.2)(yaml@2.8.3)
+        version: 8.4.0(jiti@2.6.1)(postcss@8.5.9)(tsx@4.21.0)(typescript@6.0.2)(yaml@2.8.3)
       typescript:
         specifier: 6.0.2
         version: 6.0.2
@@ -749,7 +749,7 @@ importers:
         version: 0.20.0
       tsup:
         specifier: 8.4.0
-        version: 8.4.0(jiti@2.6.1)(postcss@8.5.8)(tsx@4.21.0)(typescript@6.0.2)(yaml@2.8.3)
+        version: 8.4.0(jiti@2.6.1)(postcss@8.5.9)(tsx@4.21.0)(typescript@6.0.2)(yaml@2.8.3)
       typescript:
         specifier: 6.0.2
         version: 6.0.2
@@ -761,7 +761,7 @@ importers:
     dependencies:
       tsup:
         specifier: 8.4.0
-        version: 8.4.0(jiti@2.6.1)(postcss@8.5.8)(tsx@4.21.0)(typescript@6.0.2)(yaml@2.8.3)
+        version: 8.4.0(jiti@2.6.1)(postcss@8.5.9)(tsx@4.21.0)(typescript@6.0.2)(yaml@2.8.3)
     devDependencies:
       '@monkeytype/typescript-config':
         specifier: workspace:*
@@ -797,7 +797,7 @@ importers:
         version: 0.20.0
       tsup:
         specifier: 8.4.0
-        version: 8.4.0(jiti@2.6.1)(postcss@8.5.8)(tsx@4.21.0)(typescript@6.0.2)(yaml@2.8.3)
+        version: 8.4.0(jiti@2.6.1)(postcss@8.5.9)(tsx@4.21.0)(typescript@6.0.2)(yaml@2.8.3)
       typescript:
         specifier: 6.0.2
         version: 6.0.2
@@ -4949,7 +4949,7 @@ packages:
     engines: {node: ^10 || ^12 || >=14}
     hasBin: true
     peerDependencies:
-      postcss: 8.5.8
+      postcss: 8.5.9
 
   available-typed-arrays@1.0.7:
     resolution: {integrity: sha512-wvUjBtSGN7+7SjNpq/9M2Tg350UZD3q62IFZLbRAR1bSMlCo1ZaeW+BJ+D090e4hIIZLBcTDWe4Mh4jvUDajzQ==}
@@ -5058,7 +5058,7 @@ packages:
   basic-ftp@5.0.5:
     resolution: {integrity: sha512-4Bcg1P8xhUuqcii/S0Z9wiHIrQVPMermM1any+MX5GeGD7faD3/msQUDGLol9wOcz4/jbg/WJnGqoJF6LiBdtg==}
     engines: {node: '>=10.0.0'}
-    deprecated: Security vulnerability fixed in 5.2.0, please upgrade
+    deprecated: Security vulnerability fixed in 5.2.1, please upgrade
 
   bcrypt-pbkdf@1.0.2:
     resolution: {integrity: sha512-qeFIXtP4MSoi6NLqO12WfqARWWuCKi2Rn/9hJLEmtB5yTNr9DqFWkJRCf2qShWzPeAMRnOgCrq0sg/KLv5ES9w==}
@@ -5929,7 +5929,7 @@ packages:
     resolution: {integrity: sha512-pSXA6dyqmBPBuERpoOKKTUUjQCZwZPLRbd1VdsTbt6W+m/+6ROl4BbE87yQBUtLoK7yX8pvXHdKyM/xNIW9F7A==}
     engines: {node: ^14.0.0 || >=16.0.0}
     peerDependencies:
-      postcss: 8.5.8
+      postcss: 8.5.9
 
   detective-sass@6.0.0:
     resolution: {integrity: sha512-h5GCfFMkPm4ZUUfGHVPKNHKT8jV7cSmgK+s4dgQH4/dIUNh9/huR1fjEQrblOQNDalSU7k7g+tiW9LJ+nVEUhg==}
@@ -8933,7 +8933,7 @@ packages:
     engines: {node: '>= 18'}
     peerDependencies:
       jiti: '>=1.21.0'
-      postcss: 8.5.8
+      postcss: 8.5.9
       tsx: ^4.8.1
       yaml: ^2.4.2
     peerDependenciesMeta:
@@ -8953,10 +8953,10 @@ packages:
     resolution: {integrity: sha512-YLJpK0N1brcNJrs9WatuJFtHaV9q5aAOj+S4DI5S7jgHlRfm0PIbDCAFRYMQD5SHq7Fy6xsDhyutgS0QOAs0qw==}
     engines: {node: '>=10'}
     peerDependencies:
-      postcss: 8.5.8
+      postcss: 8.5.9
 
-  postcss@8.5.8:
-    resolution: {integrity: sha512-OW/rX8O/jXnm82Ey1k44pObPtdblfiuWnrd8X7GJ7emImCOstunGbXUpp7HdBrFQX6rJzn3sPT397Wp5aCwCHg==}
+  postcss@8.5.9:
+    resolution: {integrity: sha512-7a70Nsot+EMX9fFU3064K/kdHWZqGVY+BADLyXc8Dfv+mTLLVl6JzJpPaCZ2kQL9gIJvKXSLMHhqdRRjwQeFtw==}
     engines: {node: ^10 || ^12 || >=14}
 
   postgres-array@2.0.0:
@@ -9323,6 +9323,11 @@ packages:
 
   resolve@1.22.11:
     resolution: {integrity: sha512-RfqAvLnMl313r7c9oclB1HhUEAezcpLjz95wFH4LVuhk9JF/r22qmVP9AMmOU4vMX7Q8pN8jwNg/CSpdFnMjTQ==}
+    engines: {node: '>= 0.4'}
+    hasBin: true
+
+  resolve@1.22.12:
+    resolution: {integrity: sha512-TyeJ1zif53BPfHootBGwPRYT1RUt6oGWsaQr8UyZW/eAm9bKoijtvruSDEmZHm92CwS9nj7/fWttqPCgzep8CA==}
     engines: {node: '>= 0.4'}
     hasBin: true
 
@@ -10318,7 +10323,7 @@ packages:
     peerDependencies:
       '@microsoft/api-extractor': ^7.36.0
       '@swc/core': ^1
-      postcss: 8.5.8
+      postcss: 8.5.9
       typescript: '>=4.5.0'
     peerDependenciesMeta:
       '@microsoft/api-extractor':
@@ -11287,7 +11292,7 @@ snapshots:
       '@babel/helper-plugin-utils': 7.28.6
       debug: 4.4.3(supports-color@5.5.0)
       lodash.debounce: 4.0.8
-      resolve: 1.22.11
+      resolve: 1.22.12
     transitivePeerDependencies:
       - supports-color
 
@@ -13818,7 +13823,7 @@ snapshots:
       '@types/resolve': 1.20.2
       deepmerge: 4.3.1
       is-module: 1.0.0
-      resolve: 1.22.11
+      resolve: 1.22.12
     optionalDependencies:
       rollup: 2.80.0
 
@@ -15227,6 +15232,14 @@ snapshots:
     optionalDependencies:
       vite: 8.0.5(@emnapi/core@1.9.0)(@emnapi/runtime@1.9.0)(@types/node@20.5.1)(esbuild@0.27.7)(jiti@2.6.1)(sass@1.98.0)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3)
 
+  '@vitest/mocker@4.1.0(vite@8.0.5(@emnapi/core@1.9.0)(@emnapi/runtime@1.9.0)(@types/node@24.9.1)(esbuild@0.25.11)(jiti@2.6.1)(sass@1.98.0)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3))':
+    dependencies:
+      '@vitest/spy': 4.1.0
+      estree-walker: 3.0.3
+      magic-string: 0.30.21
+    optionalDependencies:
+      vite: 8.0.5(@emnapi/core@1.9.0)(@emnapi/runtime@1.9.0)(@types/node@24.9.1)(esbuild@0.25.11)(jiti@2.6.1)(sass@1.98.0)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3)
+
   '@vitest/mocker@4.1.0(vite@8.0.5(@emnapi/core@1.9.0)(@emnapi/runtime@1.9.0)(@types/node@24.9.1)(esbuild@0.27.7)(jiti@2.6.1)(sass@1.70.0)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3))':
     dependencies:
       '@vitest/spy': 4.1.0
@@ -15331,7 +15344,7 @@ snapshots:
       '@vue/shared': 3.4.37
       estree-walker: 2.0.2
       magic-string: 0.30.17
-      postcss: 8.5.8
+      postcss: 8.5.9
       source-map-js: 1.2.1
 
   '@vue/compiler-ssr@3.4.37':
@@ -15584,13 +15597,13 @@ snapshots:
 
   atomic-sleep@1.0.0: {}
 
-  autoprefixer@10.4.27(postcss@8.5.8):
+  autoprefixer@10.4.27(postcss@8.5.9):
     dependencies:
       browserslist: 4.28.1
       caniuse-lite: 1.0.30001778
       fraction.js: 5.3.4
       picocolors: 1.1.1
-      postcss: 8.5.8
+      postcss: 8.5.9
       postcss-value-parser: 4.2.0
 
   available-typed-arrays@1.0.7:
@@ -16603,11 +16616,11 @@ snapshots:
     dependencies:
       node-source-walk: 7.0.0
 
-  detective-postcss@7.0.0(postcss@8.5.8):
+  detective-postcss@7.0.0(postcss@8.5.9):
     dependencies:
       is-url: 1.2.4
-      postcss: 8.5.8
-      postcss-values-parser: 6.0.2(postcss@8.5.8)
+      postcss: 8.5.9
+      postcss-values-parser: 6.0.2(postcss@8.5.9)
 
   detective-sass@6.0.0:
     dependencies:
@@ -20306,25 +20319,25 @@ snapshots:
 
   possible-typed-array-names@1.1.0: {}
 
-  postcss-load-config@6.0.1(jiti@2.6.1)(postcss@8.5.8)(tsx@4.21.0)(yaml@2.8.3):
+  postcss-load-config@6.0.1(jiti@2.6.1)(postcss@8.5.9)(tsx@4.21.0)(yaml@2.8.3):
     dependencies:
       lilconfig: 3.1.3
     optionalDependencies:
       jiti: 2.6.1
-      postcss: 8.5.8
+      postcss: 8.5.9
       tsx: 4.21.0
       yaml: 2.8.3
 
   postcss-value-parser@4.2.0: {}
 
-  postcss-values-parser@6.0.2(postcss@8.5.8):
+  postcss-values-parser@6.0.2(postcss@8.5.9):
     dependencies:
       color-name: 1.1.4
       is-url-superb: 4.0.0
-      postcss: 8.5.8
+      postcss: 8.5.9
       quote-unquote: 1.0.0
 
-  postcss@8.5.8:
+  postcss@8.5.9:
     dependencies:
       nanoid: 3.3.11
       picocolors: 1.1.1
@@ -20347,7 +20360,7 @@ snapshots:
       detective-amd: 6.0.0
       detective-cjs: 6.0.0
       detective-es6: 5.0.0
-      detective-postcss: 7.0.0(postcss@8.5.8)
+      detective-postcss: 7.0.0(postcss@8.5.9)
       detective-sass: 6.0.0
       detective-scss: 5.0.0
       detective-stylus: 5.0.0
@@ -20355,7 +20368,7 @@ snapshots:
       detective-vue2: 2.0.3(typescript@5.9.3)
       module-definition: 6.0.0
       node-source-walk: 7.0.0
-      postcss: 8.5.8
+      postcss: 8.5.9
       typescript: 5.9.3
     transitivePeerDependencies:
       - supports-color
@@ -20765,6 +20778,13 @@ snapshots:
 
   resolve@1.22.11:
     dependencies:
+      is-core-module: 2.16.1
+      path-parse: 1.0.7
+      supports-preserve-symlinks-flag: 1.0.0
+
+  resolve@1.22.12:
+    dependencies:
+      es-errors: 1.3.0
       is-core-module: 2.16.1
       path-parse: 1.0.7
       supports-preserve-symlinks-flag: 1.0.0
@@ -21615,7 +21635,7 @@ snapshots:
       '@types/stylis': 4.2.7
       css-to-react-native: 3.2.0
       csstype: 3.2.3
-      postcss: 8.5.8
+      postcss: 8.5.9
       react: 18.3.1
       shallowequal: 1.1.0
       stylis: 4.3.6
@@ -22021,7 +22041,7 @@ snapshots:
 
   tsscmp@1.0.6: {}
 
-  tsup@8.4.0(jiti@2.6.1)(postcss@8.5.8)(tsx@4.21.0)(typescript@6.0.2)(yaml@2.8.3):
+  tsup@8.4.0(jiti@2.6.1)(postcss@8.5.9)(tsx@4.21.0)(typescript@6.0.2)(yaml@2.8.3):
     dependencies:
       bundle-require: 5.1.0(esbuild@0.25.11)
       cac: 6.7.14
@@ -22031,7 +22051,7 @@ snapshots:
       esbuild: 0.25.11
       joycon: 3.1.1
       picocolors: 1.1.1
-      postcss-load-config: 6.0.1(jiti@2.6.1)(postcss@8.5.8)(tsx@4.21.0)(yaml@2.8.3)
+      postcss-load-config: 6.0.1(jiti@2.6.1)(postcss@8.5.9)(tsx@4.21.0)(yaml@2.8.3)
       resolve-from: 5.0.0
       rollup: 4.52.5
       source-map: 0.8.0-beta.0
@@ -22040,7 +22060,7 @@ snapshots:
       tinyglobby: 0.2.15
       tree-kill: 1.2.2
     optionalDependencies:
-      postcss: 8.5.8
+      postcss: 8.5.9
       typescript: 6.0.2
     transitivePeerDependencies:
       - jiti
@@ -22402,7 +22422,7 @@ snapshots:
       esbuild: 0.27.7
       fdir: 6.5.0(picomatch@4.0.4)
       picomatch: 4.0.4
-      postcss: 8.5.8
+      postcss: 8.5.9
       rollup: 4.60.1
       tinyglobby: 0.2.15
     optionalDependencies:
@@ -22419,7 +22439,7 @@ snapshots:
     dependencies:
       lightningcss: 1.32.0
       picomatch: 4.0.4
-      postcss: 8.5.8
+      postcss: 8.5.9
       rolldown: 1.0.0-rc.12(@emnapi/core@1.9.0)(@emnapi/runtime@1.9.0)
       tinyglobby: 0.2.15
     optionalDependencies:
@@ -22435,11 +22455,31 @@ snapshots:
       - '@emnapi/core'
       - '@emnapi/runtime'
 
+  vite@8.0.5(@emnapi/core@1.9.0)(@emnapi/runtime@1.9.0)(@types/node@24.9.1)(esbuild@0.25.11)(jiti@2.6.1)(sass@1.98.0)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3):
+    dependencies:
+      lightningcss: 1.32.0
+      picomatch: 4.0.4
+      postcss: 8.5.9
+      rolldown: 1.0.0-rc.12(@emnapi/core@1.9.0)(@emnapi/runtime@1.9.0)
+      tinyglobby: 0.2.15
+    optionalDependencies:
+      '@types/node': 24.9.1
+      esbuild: 0.25.11
+      fsevents: 2.3.3
+      jiti: 2.6.1
+      sass: 1.98.0
+      terser: 5.46.1
+      tsx: 4.21.0
+      yaml: 2.8.3
+    transitivePeerDependencies:
+      - '@emnapi/core'
+      - '@emnapi/runtime'
+
   vite@8.0.5(@emnapi/core@1.9.0)(@emnapi/runtime@1.9.0)(@types/node@24.9.1)(esbuild@0.27.7)(jiti@2.6.1)(sass@1.70.0)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3):
     dependencies:
       lightningcss: 1.32.0
       picomatch: 4.0.4
-      postcss: 8.5.8
+      postcss: 8.5.9
       rolldown: 1.0.0-rc.12(@emnapi/core@1.9.0)(@emnapi/runtime@1.9.0)
       tinyglobby: 0.2.15
     optionalDependencies:
@@ -22459,7 +22499,7 @@ snapshots:
     dependencies:
       lightningcss: 1.32.0
       picomatch: 4.0.4
-      postcss: 8.5.8
+      postcss: 8.5.9
       rolldown: 1.0.0-rc.12(@emnapi/core@1.9.0)(@emnapi/runtime@1.9.0)
       tinyglobby: 0.2.15
     optionalDependencies:
@@ -22479,7 +22519,7 @@ snapshots:
     dependencies:
       lightningcss: 1.32.0
       picomatch: 4.0.4
-      postcss: 8.5.8
+      postcss: 8.5.9
       rolldown: 1.0.0-rc.12(@emnapi/core@1.9.0)(@emnapi/runtime@1.9.0)
       tinyglobby: 0.2.15
     optionalDependencies:
@@ -22587,6 +22627,35 @@ snapshots:
     optionalDependencies:
       '@types/node': 24.9.1
       '@vitest/browser-playwright': 4.0.18(playwright@1.58.2)(vite@7.3.2(@types/node@24.9.1)(jiti@2.6.1)(lightningcss@1.32.0)(sass@1.98.0)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3))(vitest@4.1.0)
+      happy-dom: 20.8.9
+      jsdom: 27.4.0
+    transitivePeerDependencies:
+      - msw
+
+  vitest@4.1.0(@types/node@24.9.1)(happy-dom@20.8.9)(jsdom@27.4.0)(vite@8.0.5(@emnapi/core@1.9.0)(@emnapi/runtime@1.9.0)(@types/node@24.9.1)(esbuild@0.25.11)(jiti@2.6.1)(sass@1.98.0)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3)):
+    dependencies:
+      '@vitest/expect': 4.1.0
+      '@vitest/mocker': 4.1.0(vite@8.0.5(@emnapi/core@1.9.0)(@emnapi/runtime@1.9.0)(@types/node@24.9.1)(esbuild@0.25.11)(jiti@2.6.1)(sass@1.98.0)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3))
+      '@vitest/pretty-format': 4.1.0
+      '@vitest/runner': 4.1.0
+      '@vitest/snapshot': 4.1.0
+      '@vitest/spy': 4.1.0
+      '@vitest/utils': 4.1.0
+      es-module-lexer: 2.0.0
+      expect-type: 1.3.0
+      magic-string: 0.30.21
+      obug: 2.1.1
+      pathe: 2.0.3
+      picomatch: 4.0.3
+      std-env: 4.0.0
+      tinybench: 2.9.0
+      tinyexec: 1.0.2
+      tinyglobby: 0.2.15
+      tinyrainbow: 3.0.3
+      vite: 8.0.5(@emnapi/core@1.9.0)(@emnapi/runtime@1.9.0)(@types/node@24.9.1)(esbuild@0.25.11)(jiti@2.6.1)(sass@1.98.0)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3)
+      why-is-node-running: 2.3.0
+    optionalDependencies:
+      '@types/node': 24.9.1
       happy-dom: 20.8.9
       jsdom: 27.4.0
     transitivePeerDependencies:
