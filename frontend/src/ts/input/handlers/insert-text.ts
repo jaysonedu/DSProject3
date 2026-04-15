@@ -110,15 +110,21 @@ export async function onInsertText(options: OnInsertTextParams): Promise<void> {
     !CompositionState.getComposing()
   ) {
     const domWord = getInputElementValue().inputValue.replace(/\s+$/u, "");
-    const corrected = tryDs3StudyDesktopAutocorrect(domWord, currentWord);
-    if (corrected !== null) {
+    const fixedWord = tryDs3StudyDesktopAutocorrect(domWord, currentWord);
+    if (fixedWord !== null) {
       TestInput.forgiveCurrentWordKeyErrorsForStudyAutocorrect(
         domWord,
         currentWord,
       );
-      setInputElementValue(corrected);
+      setInputElementValue(fixedWord);
       TestInput.input.syncWithInputElement();
       testInput = TestInput.input.current;
+      TestInput.corrected.current = fixedWord;
+      void TestUI.updateWordLetters({
+        input: fixedWord,
+        wordIndex: TestState.activeWordIndex,
+        compositionData: CompositionState.getData() ?? "",
+      });
     }
   }
 
