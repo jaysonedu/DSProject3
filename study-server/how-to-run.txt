@@ -1,0 +1,37 @@
+DS Project 3 — study data API (server-side log)
+
+WHAT THIS DOES
+  Participants use your deployed Monkeytype study page. When they finish, the
+  browser POSTs JSON to this service. Each submission is appended to:
+    data/submissions.ndjson
+  You can download a CSV anytime:
+    GET http://YOUR_SERVER/export.csv
+
+LOCAL TRY (from this repo root, i.e. monkeytype/)
+  cd study-server
+  npm install
+  npm start
+  Default port: 8787 (override with PORT=9999)
+
+  In frontend/, copy example.env.study to .env.local:
+ VITE_DS3_COLLECT_URL=http://localhost:8787/submit
+  Restart: pnpm dev-fe (from repo root)
+
+DEPLOY (two parts)
+  A) This API — host on any Node host (Render, Railway, Fly.io, VPS).
+     Set env PORT if the platform provides it (Render does).
+     Persist disk: mount a volume or use the host’s filesystem so data/
+     survives redeploys.
+
+  B) Typing website — build Monkeytype frontend with the SAME base URL:
+     VITE_DS3_COLLECT_URL=https://YOUR-API-HOST/submit
+     Deploy the static build (Netlify, Vercel, GitHub Pages, or the same
+     server using a static file server).
+
+  Participant link example:
+    https://YOUR-TYPING-SITE/?ds3_pid=optional-external-id
+
+SECURITY NOTE
+  /submit is open by default (typical for anonymous class studies). For a
+  public URL, consider firewalling /export.csv or putting it behind HTTP auth on your reverse proxy. Do not expose private participant data without IRB
+  approval and consent.
