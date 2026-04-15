@@ -21,6 +21,23 @@
 [![Vitest](https://img.shields.io/badge/vitest-00FF74?style=for-the-badge&logo=vitest&logoColor=white)](https://vitest.dev/)
 [![Zod](https://img.shields.io/badge/-Zod-408AFF?style=for-the-badge&logo=zod&logoColor=white)](https://zod.dev/)
 
+# DS Project 3 (Columbia) — study fork notes
+
+This repo includes a **typing study** layer: **30s English** time test, **A/B autocorrect on/off**, optional **POST** of results to a small **Node collector** (`study-server`), and desktop typo correction aligned with that condition.
+
+**Full documentation for teammates (runbook, architecture, handoff checklist): [docs/DS_PROJECT3.md](./docs/DS_PROJECT3.md)**
+
+**Quick local run**
+
+1. Terminal A: `cd study-server && npm install && npm start` → API on port **8787**.
+2. Copy `frontend/example.env.study` to `frontend/.env.local` and set `VITE_DS3_COLLECT_URL` (use `http://127.0.0.1:8787/submit` on Windows if needed).
+3. From repo root: **`pnpm dev-fe`** (do **not** rely on `npm start` in `frontend/` for local collection — that is `vite preview` without your env baked in).
+4. Open **http://localhost:3000** and complete a run; data appends to **`study-server/data/submissions.ndjson`**.
+
+Disable the whole study UI by setting `DS_PROJECT3_STUDY_ENABLED` to `false` in `frontend/src/ts/experiment/ds-project3-flags.ts`.
+
+---
+
 # About
 
 Monkeytype is a minimalistic and customizable [typing test](https://www.monkeytype.com). It features many test modes, an account system to save your typing speed history, and user-configurable features such as themes, sounds, a smooth caret, and more. Monkeytype attempts to emulate a natural typing experience during a typing test by unobtrusively presenting the text prompts and displaying typed characters in place, providing straightforward, real-time feedback on typos, speed, and accuracy.
