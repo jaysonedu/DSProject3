@@ -48,6 +48,7 @@ import { highlight } from "../events/keymap";
 import * as LazyModeState from "../legacy-states/remember-lazy-mode";
 import Format from "../singletons/format";
 import { Mode } from "@monkeytype/schemas/shared";
+import { onStudyTestFinished } from "../experiment/ds-project3-study";
 import {
   CompletedEvent,
   CompletedEventCustomText,
@@ -1108,6 +1109,8 @@ export async function finish(difficultyFailed = false): Promise<void> {
     dontSave = true;
   }
 
+  const ds3StudyTestAccepted = !dontSave;
+
   // test is valid
 
   if (TestState.isRepeated || difficultyFailed) {
@@ -1217,6 +1220,8 @@ export async function finish(difficultyFailed = false): Promise<void> {
   );
 
   await Promise.all([savingResultPromise, resultUpdatePromise]);
+
+  onStudyTestFinished(completedEvent, !ds3StudyTestAccepted);
 }
 
 async function saveResult(

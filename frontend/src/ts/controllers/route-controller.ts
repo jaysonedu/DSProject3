@@ -8,6 +8,7 @@ import * as TestState from "../test/test-state";
 import { showNoticeNotification } from "../states/notifications";
 import { navigationEvent, type NavigateOptions } from "../events/navigation";
 import { authEvent } from "../events/auth";
+import { isStudyModeLockedToTest } from "../experiment/ds-project3-study";
 
 //source: https://www.youtube.com/watch?v=OstALBk-jTc
 // https://www.youtube.com/watch?v=OstALBk-jTc
@@ -193,6 +194,18 @@ export async function navigate(
 
   url = url.replace(/\/$/, "");
   if (url === "") url = "/";
+
+  if (isStudyModeLockedToTest() && !options.force) {
+    const pathOnly = new URL(url, window.location.origin).pathname.replace(
+      /\/$/,
+      "",
+    );
+    const normalized = pathOnly === "" ? "/" : pathOnly;
+    if (normalized !== "/" && normalized !== "/verify") {
+      void navigate("/", { ...options, force: true });
+      return;
+    }
+  }
 
   // only push to history if we're navigating to a different URL
   const currentUrl = new URL(window.location.href);

@@ -1,0 +1,119 @@
+// Minimal UI for DS Project 3: single 60s time test, A/B autocorrect, no extra navigation.
+
+#ds3-study-condition {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 9998;
+  font-size: 0.75rem;
+  text-align: center;
+  padding: 0.4rem 0.75rem;
+  background: var(--sub-alt-color);
+  color: var(--sub-color);
+  border-top: 1px solid var(--border-color);
+  pointer-events: none;
+}
+
+body.ds-project3-study {
+  // Shell chrome
+  #app > mount[data-component="header"],
+  #app > mount[data-component="footer"],
+  mount[data-component="devtools"],
+  #ad-vertical-left-wrapper,
+  #ad-vertical-right-wrapper,
+  #ad-footer-wrapper,
+  #ad-footer-small-wrapper,
+  #barTimerProgress {
+    display: none !important;
+  }
+
+  // Static HTML popups (PSA, tips) — not needed for controlled study session
+  #popups,
+  #solidpopups {
+    display: none !important;
+  }
+
+  // Per-test controls we do not need for the study
+  .pageTest > mount[data-component="testconfig"],
+  .pageTest #restartTestButton,
+  .pageTest #keymap,
+  .pageTest #monkey,
+  .pageTest .loginTip,
+  .pageTest #testModesNotice,
+  .pageTest #compositionDisplay,
+  .pageTest #paceCaret,
+  #result .loginTip,
+  #result #ad-result-wrapper,
+  #result #ad-result-small-wrapper {
+    display: none !important;
+  }
+
+  // Result screen: after a valid run we show the thank-you overlay immediately;
+  // keep layout simple if the result view flashes before the overlay mounts.
+  #result .stats.morestats,
+  #result .buttons,
+  #result #resultWordsHistory,
+  #result #resultReplay,
+  #result #retrySavingResultButton,
+  #result .chart .chartLegend,
+  #result .ssWatermark,
+  #result .chart,
+  #result .bigChart {
+    display: none !important;
+  }
+
+  #result .group.wpm .crown {
+    display: none !important;
+  }
+}
+
+body.ds-project3-study-session-done {
+  #app > main > *:not(#ds3-study-complete-panel) {
+    visibility: hidden !important;
+    pointer-events: none !important;
+  }
+
+  #ds3-study-complete-panel {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-color, #323437);
+    color: var(--main-color, #d1d0c5);
+    padding: 2rem;
+  }
+
+  .ds3-study-complete-inner {
+    max-width: 32rem;
+    text-align: center;
+  }
+
+  .ds3-study-complete-title {
+    font-size: 1.75rem;
+    margin: 0 0 1rem;
+    font-weight: 600;
+  }
+
+  .ds3-study-complete-text,
+  .ds3-study-complete-stats,
+  .ds3-study-complete-hint {
+    margin: 0.75rem 0;
+    line-height: 1.5;
+  }
+
+  .ds3-study-complete-hint {
+    font-size: 0.85rem;
+    opacity: 0.75;
+  }
+
+  .ds3-study-variant-line {
+    font-size: 0.95rem;
+  }
+
+  #ds3-study-condition {
+    display: none !important;
+  }
+}

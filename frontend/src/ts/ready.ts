@@ -7,17 +7,24 @@ import { authPromise } from "./firebase";
 import { animate } from "animejs";
 import { onDOMReady, qs } from "./utils/dom";
 import { isDevEnvironment } from "./utils/env";
+import {
+  initDsProject3Study,
+  isStudyModeActive,
+} from "./experiment/ds-project3-study";
 
 onDOMReady(async () => {
   await configLoadPromise;
   await authPromise;
+  await initDsProject3Study();
 
   //this line goes back to pretty much the beginning of the project and im pretty sure its here
   //to make sure the initial theme application doesnt animate the background color
   qs("body")?.setStyle({
     transition: "background .25s, transform .05s",
   });
-  MerchBanner.showIfNotClosedBefore();
+  if (!isStudyModeActive()) {
+    MerchBanner.showIfNotClosedBefore();
+  }
 
   const app = document.querySelector("#app") as HTMLElement;
   app?.classList.remove("hidden");
