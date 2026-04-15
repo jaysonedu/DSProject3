@@ -516,6 +516,48 @@ export function pushMissedWord(word: string): void {
   }
 }
 
+/**
+ * DS Project 3 study: when desktop autocorrect replaces the typed word with the
+ * target on Space, undo key penalties for that word.
+ *
+ * We cannot use currentErrorHistory.count — the 1s timer calls pushErrorToHistory()
+ * and resets it, so it is usually0 by the time Space fires. Instead we estimate
+ * forgivable errors from aligned character differences vs the target.
+ */
+export function forgiveCurrentWordKeyErrorsForStudyAutocorrect(
+  typedBeforeFix: string,
+  targetWord: string,
+): void {
+  const len = Math.max(typedBeforeFix.length, targetWord.length);
+  let n = 0;
+  for (let i = 0; i < len; i++) {
+    if (typedBeforeFix[i] !== targetWord[i]) {
+      n++;
+    }
+  }
+  if (n <= 0) {
+    return;
+  }
+  const forgive = Math.min(n, accuracy.incorrect);
+  if (forgive <= 0) {
+    return;
+  }
+  accuracy.incorrect -= forgive;
+  accuracy.correct += forgive;
+  currentErrorHistory.count = Math.max(0, currentErrorHistory.count - forgive);
+  const m = missedWords[targetWord];
+  if (typeof m === "number") {
+    const dec = Math.min(forgive, m);
+    const next = m - dec;
+    if (next <= 0) {
+      // oxlint-disable-next-line no-dynamic-delete
+      delete missedWords[targetWord];
+    } else {
+      missedWords[targetWord] = next;
+    }
+  }
+}
+
 export function pushToWpmHistory(wpm: number): void {
   wpmHistory.push(wpm);
 }

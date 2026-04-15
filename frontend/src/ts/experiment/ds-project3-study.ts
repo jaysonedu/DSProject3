@@ -65,6 +65,63 @@ function getCollectUrl(): string | null {
   return typeof u === "string" && u.length > 0 ? u : null;
 }
 
+function levenshtein(a: string, b: string): number {
+  if (a.length === 0) {
+    return b.length;
+  }
+  if (b.length === 0) {
+    return a.length;
+  }
+  const row = new Array<number>(b.length + 1);
+  for (let j = 0; j <= b.length; j++) {
+    row[j] = j;
+  }
+  for (let i = 1; i <= a.length; i++) {
+    let prev = row[0] as number;
+    row[0] = i;
+    for (let j = 1; j <= b.length; j++) {
+      const tmp = row[j] as number;
+      const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+      row[j] = Math.min(
+        (row[j] as number) + 1,
+        (row[j - 1] as number) + 1,
+        prev + cost,
+      );
+      prev = tmp;
+    }
+  }
+  return row[b.length] as number;
+}
+
+/**
+ * Study “autocorrect on” for physical keyboards: if the typed word is within a
+ * small edit distance of the target word, return the target (applied on Space in
+ * insert-text). Mobile still uses textarea autocorrect/spellcheck attributes.
+ */
+export function tryDs3StudyDesktopAutocorrect(
+  typedWord: string,
+  targetWord: string,
+): string | null {
+  if (!DS_PROJECT3_STUDY_ENABLED) {
+    return null;
+  }
+  if (getAssignedVariant() !== "autocorrect_on") {
+    return null;
+  }
+  if (typedWord === targetWord) {
+    return null;
+  }
+  if (typedWord.toLowerCase() === targetWord.toLowerCase()) {
+    return targetWord;
+  }
+  // Allow 2 edits for words of length 3+ (covers transpositions like "teh" → "the").
+  const maxDist = targetWord.length <= 2 ? 1 : 2;
+  if (levenshtein(typedWord, targetWord) <= maxDist) {
+    return targetWord;
+  }
+  return null;
+}
+
 async function postStudyPayload(
   body: Record<string, unknown>,
 ): Promise<boolean> {
@@ -171,11 +228,13 @@ async function applyStudyTypingConfig(): Promise<void> {
     punctuation: false,
     numbers: false,
     funbox: [],
+    difficulty: "normal",
     quickRestart: "off",
     keymapMode: "off",
     paceCaret: "off",
     confidenceMode: "off",
-    indicateTypos: "off",
+    // So wrong letters are visible in the word list (browser spellcheck squiggles are unreliable here).
+    indicateTypos: "replace",
     blindMode: false,
     stopOnError: "off",
     liveSpeedStyle: "mini",
@@ -265,7 +324,7 @@ function renderConditionBanner(variant: AutocorrectVariant): void {
   el.setAttribute("role", "status");
   el.textContent =
     variant === "autocorrect_on"
-      ? "Study mode: one 30s test · Autocorrect ON (where supported by your device)"
+      ? "Study mode: one 30s test · Autocorrect ON — press Space to finish each word; small typos may snap to the target word (desktop). Red squiggles in the box are often hidden by the browser."
       : "Study mode: one 30s test · Autocorrect OFF";
   document.body.append(el);
 }

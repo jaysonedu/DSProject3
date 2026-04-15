@@ -37,6 +37,7 @@ import {
   isCharCorrect,
   shouldInsertSpaceCharacter,
 } from "../helpers/validation";
+import { tryDs3StudyDesktopAutocorrect } from "../../experiment/ds-project3-study";
 
 const charOverrides = new Map<string, string>([
   ["…", "..."],
@@ -100,8 +101,26 @@ export async function onInsertText(options: OnInsertTextParams): Promise<void> {
   }
 
   // input and target word
-  const testInput = TestInput.input.current;
+  let testInput = TestInput.input.current;
   const currentWord = TestWords.words.getCurrent();
+
+  if (
+    isSpace(options.data) &&
+    Config.mode !== "zen" &&
+    !CompositionState.getComposing()
+  ) {
+    const domWord = getInputElementValue().inputValue.replace(/\s+$/u, "");
+    const corrected = tryDs3StudyDesktopAutocorrect(domWord, currentWord);
+    if (corrected !== null) {
+      TestInput.forgiveCurrentWordKeyErrorsForStudyAutocorrect(
+        domWord,
+        currentWord,
+      );
+      setInputElementValue(corrected);
+      TestInput.input.syncWithInputElement();
+      testInput = TestInput.input.current;
+    }
+  }
 
   // if the character is visually equal, replace it with the target character
   // this ensures all future equivalence checks work correctly
