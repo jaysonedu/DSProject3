@@ -70,7 +70,20 @@ async function postStudyPayload(
 ): Promise<boolean> {
   const url = getCollectUrl();
   if (url === null) {
+    if (import.meta.env.DEV) {
+      console.warn(
+        "[DS Project 3] POST skipped: VITE_DS3_COLLECT_URL is empty",
+      );
+    }
     return false;
+  }
+  if (import.meta.env.DEV) {
+    const ev = body["event"];
+    console.info(
+      "[DS Project 3] POST →",
+      url,
+      typeof ev === "string" ? ev : "",
+    );
   }
   try {
     const res = await fetch(url, {
@@ -79,10 +92,52 @@ async function postStudyPayload(
       body: JSON.stringify(body),
       mode: "cors",
     });
+    if (!res.ok && import.meta.env.DEV) {
+      const text = await res.text().catch(() => "");
+      console.warn("[DS Project 3] Collector HTTP", res.status, text);
+    }
     return res.ok;
-  } catch {
+  } catch (e) {
+    if (import.meta.env.DEV) {
+      const hint =
+        typeof url === "string" && url.includes("localhost")
+          ? " Try 127.0.0.1 instead of localhost if you are on Windows (IPv6 vs IPv4)."
+          : "";
+      console.warn(
+        "[DS Project 3] Collector fetch failed (is study-server running on :8787?)",
+        e,
+        hint,
+      );
+    }
     return false;
   }
+}
+
+function registerDs3DevConsoleHelpers(): void {
+  if (!import.meta.env.DEV) return;
+  console.info(
+    "[DS Project 3] Autocorrect A/B variant (stored in localStorage):",
+    getAssignedVariant(),
+    "participantId:",
+    getStudyParticipantId(),
+  );
+  const w = window as unknown as {
+    ds3ExportStudyRunLog: () => void;
+    ds3GetStudyVariant: () => AutocorrectVariant | null;
+    ds3GetParticipantId: () => string;
+    ds3GetCollectUrl: () => string | null;
+    ds3PingCollector: () => Promise<boolean>;
+  };
+  w.ds3ExportStudyRunLog = downloadStudyRunLog;
+  w.ds3GetStudyVariant = getAssignedVariant;
+  w.ds3GetParticipantId = getStudyParticipantId;
+  w.ds3GetCollectUrl = getCollectUrl;
+  w.ds3PingCollector = async (): Promise<boolean> =>
+    postStudyPayload({
+      event: "debug_ping",
+      participantId: getStudyParticipantId(),
+      ts: new Date().toISOString(),
+    });
 }
 
 function assignVariant(): {
@@ -299,6 +354,7 @@ export async function initDsProject3Study(): Promise<void> {
     document.body.classList.add("ds-project3-study-session-done");
     await applyStudyTypingConfig();
     renderCompletedPanel();
+    registerDs3DevConsoleHelpers();
     return;
   }
 
@@ -306,6 +362,11 @@ export async function initDsProject3Study(): Promise<void> {
   getStudyParticipantId();
   const { variant, firstAssign } = assignVariant();
   const collectUrl = getCollectUrl();
+  if (collectUrl === null) {
+    console.warn(
+      "[DS Project 3] VITE_DS3_COLLECT_URL is missing in this bundle. For local runs use `pnpm dev-fe` with frontend/.env.local (see example.env.study). `npm start` / vite preview in frontend/ does not load .env.local unless you rebuild.",
+    );
+  }
   if (firstAssign && collectUrl !== null) {
     void postStudyPayload({
       event: "assigned",
@@ -317,23 +378,7 @@ export async function initDsProject3Study(): Promise<void> {
   }
   applyAutocorrectToInput(variant);
   renderConditionBanner(variant);
-
-  if (import.meta.env.DEV) {
-    console.info(
-      "[DS Project 3] Autocorrect A/B variant (stored in localStorage):",
-      variant,
-      "participantId:",
-      getStudyParticipantId(),
-    );
-    const w = window as unknown as {
-      ds3ExportStudyRunLog: () => void;
-      ds3GetStudyVariant: () => AutocorrectVariant | null;
-      ds3GetParticipantId: () => string;
-    };
-    w.ds3ExportStudyRunLog = downloadStudyRunLog;
-    w.ds3GetStudyVariant = getAssignedVariant;
-    w.ds3GetParticipantId = getStudyParticipantId;
-  }
+  registerDs3DevConsoleHelpers();
 }
 
 export function isStudyModeLockedToTest(): boolean {
@@ -348,10 +393,24 @@ export function onStudyTestFinished(
   dontSave: boolean,
 ): void {
   if (!DS_PROJECT3_STUDY_ENABLED) return;
-  if (dontSave) return;
+  if (dontSave) {
+    if (import.meta.env.DEV) {
+      console.warn(
+        "[DS Project 3] No POST after test: run was rejected (AFK, too short, repeated, impossible WPM, etc.). Check for a “Test invalid” toast.",
+      );
+    }
+    return;
+  }
 
   const variant = getAssignedVariant();
-  if (variant === null) return;
+  if (variant === null) {
+    if (import.meta.env.DEV) {
+      console.warn(
+        "[DS Project 3] No POST: missing A/B variant (localStorage). Clear site data and reload once.",
+      );
+    }
+    return;
+  }
 
   sessionStorage.setItem(SS_SESSION_DONE, "1");
   const participantId = getStudyParticipantId();

@@ -14,8 +14,16 @@ LOCAL TRY (from this repo root, i.e. monkeytype/)
   Default port: 8787 (override with PORT=9999)
 
   In frontend/, copy example.env.study to .env.local:
- VITE_DS3_COLLECT_URL=http://localhost:8787/submit
-  Restart: pnpm dev-fe (from repo root)
+    VITE_DS3_COLLECT_URL=http://localhost:8787/submit
+
+  Start the typing site with the DEV server (required for .env.local):
+    pnpm dev-fe
+ from the monkeytype/ repo root (or: cd frontend && pnpm dev).
+
+  Do NOT use "npm start" / "vite preview" in frontend/ for local collection:
+ that serves an old production build where VITE_DS3_COLLECT_URL was baked in
+  at build time — if you never built with .env.local, the variable is missing
+  and nothing is POSTed (no submissions.ndjson). Use dev-fe, or run  "pnpm build-fe" after .env.local exists, then preview.
 
 DEPLOY (two parts)
   A) This API — host on any Node host (Render, Railway, Fly.io, VPS).
@@ -30,6 +38,18 @@ DEPLOY (two parts)
 
   Participant link example:
     https://YOUR-TYPING-SITE/?ds3_pid=optional-external-id
+
+DEBUGGING (Vite dev only — pnpm dev-fe)
+  1) Confirm the study API: open http://127.0.0.1:8787/health (should be JSON ok).
+  2) Browser DevTools → Console after page load:
+     - If you see “VITE_DS3_COLLECT_URL is missing”, you are not on vite dev with frontend/.env.local, or you need to restart dev-fe after editing .env.local.
+     - Run:  ds3GetCollectUrl()   → must be "http://localhost:8787/submit" (or your URL).
+     - Run:  await ds3PingCollector()   → must be true; then check data/submissions.ndjson
+       for a line with event debug_ping.
+  3) DevTools → Network: filter “submit”. Finish a test; you should see POST to /submit
+     with status 200. If no request: console warnings from step 2 explain why.
+  4) If the page says the session is already done, you only see the thank-you panel and
+     no new test — clear site data for localhost (or use a fresh incognito window).
 
 SECURITY NOTE
   /submit is open by default (typical for anonymous class studies). For a

@@ -48,6 +48,7 @@ import { highlight } from "../events/keymap";
 import * as LazyModeState from "../legacy-states/remember-lazy-mode";
 import Format from "../singletons/format";
 import { Mode } from "@monkeytype/schemas/shared";
+import { DS_PROJECT3_STUDY_ENABLED } from "../experiment/ds-project3-flags";
 import { onStudyTestFinished } from "../experiment/ds-project3-study";
 import {
   CompletedEvent,
@@ -1002,6 +1003,8 @@ export async function finish(difficultyFailed = false): Promise<void> {
   }
 
   let dontSave = false;
+  /** If true, DS3 study ingest should not run (invalid run). False when only MT accuracy rules failed. */
+  let ds3RejectForStudyIngest = false;
 
   if (countUndefined(ce) > 0) {
     console.log(ce);
@@ -1009,6 +1012,7 @@ export async function finish(difficultyFailed = false): Promise<void> {
       "Failed to build result object: One of the fields is undefined or NaN",
     );
     dontSave = true;
+    ds3RejectForStudyIngest = true;
   }
 
   const completedEvent = structuredClone(ce) as CompletedEvent;
@@ -1038,11 +1042,13 @@ export async function finish(difficultyFailed = false): Promise<void> {
     console.error("Test duration inconsistent", ce.testDuration, dateDur);
     TestStats.setInvalid();
     dontSave = true;
+    ds3RejectForStudyIngest = true;
   } else if (difficultyFailed) {
     showNoticeNotification(`Test failed - ${failReason}`, {
       durationMs: 1000,
     });
     dontSave = true;
+    ds3RejectForStudyIngest = true;
   } else if (
     completedEvent.testDuration < 1 ||
     (Config.mode === "time" && mode2Number < 15 && mode2Number > 0) ||
@@ -1066,14 +1072,17 @@ export async function finish(difficultyFailed = false): Promise<void> {
     TestStats.setInvalid();
     tooShort = true;
     dontSave = true;
+    ds3RejectForStudyIngest = true;
   } else if (afkDetected) {
     showNoticeNotification("Test invalid - AFK detected");
     TestStats.setInvalid();
     dontSave = true;
+    ds3RejectForStudyIngest = true;
   } else if (TestState.isRepeated) {
     showNoticeNotification("Test invalid - repeated");
     TestStats.setInvalid();
     dontSave = true;
+    ds3RejectForStudyIngest = true;
   } else if (
     completedEvent.wpm < 0 ||
     (completedEvent.wpm > 350 &&
@@ -1086,6 +1095,7 @@ export async function finish(difficultyFailed = false): Promise<void> {
     showNoticeNotification("Test invalid - wpm");
     TestStats.setInvalid();
     dontSave = true;
+    ds3RejectForStudyIngest = true;
   } else if (
     completedEvent.rawWpm < 0 ||
     (completedEvent.rawWpm > 350 &&
@@ -1098,6 +1108,7 @@ export async function finish(difficultyFailed = false): Promise<void> {
     showNoticeNotification("Test invalid - raw");
     TestStats.setInvalid();
     dontSave = true;
+    ds3RejectForStudyIngest = true;
   } else if (
     (!DB.getSnapshot()?.lbOptOut &&
       (completedEvent.acc < 75 || completedEvent.acc > 100)) ||
@@ -1107,9 +1118,11 @@ export async function finish(difficultyFailed = false): Promise<void> {
     showNoticeNotification("Test invalid - accuracy");
     TestStats.setInvalid();
     dontSave = true;
+    /* still allow DS3 study POST — accuracy thresholds are for MT leaderboard, not research */
   }
 
-  const ds3StudyTestAccepted = !dontSave;
+  const suppressDs3StudyHook =
+    dontSave && (ds3RejectForStudyIngest || !DS_PROJECT3_STUDY_ENABLED);
 
   // test is valid
 
@@ -1221,7 +1234,7 @@ export async function finish(difficultyFailed = false): Promise<void> {
 
   await Promise.all([savingResultPromise, resultUpdatePromise]);
 
-  onStudyTestFinished(completedEvent, !ds3StudyTestAccepted);
+  onStudyTestFinished(completedEvent, suppressDs3StudyHook);
 }
 
 async function saveResult(

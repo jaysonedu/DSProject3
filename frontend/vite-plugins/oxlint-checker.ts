@@ -253,12 +253,16 @@ export function oxlintChecker(options: OxlintCheckerOptions = {}): Plugin {
       const overlayPath = normalizePath(
         fileURLToPath(new URL("./oxlint-overlay.ts", import.meta.url)),
       );
+      // Vite expects /@fs/<absolute-path>. On Windows overlayPath is "C:/..." — must
+      // not concatenate as /@fsC:/... (breaks devtools; 404 on the overlay script).
+      const posix = overlayPath.replace(/\\/g, "/");
+      const fsSuffix = posix.startsWith("/") ? posix : `/${posix}`;
       return [
         {
           tag: "script",
           attrs: {
             type: "module",
-            src: `/@fs${overlayPath}`,
+            src: `/@fs${fsSuffix}`,
           },
           injectTo: "body-prepend",
         },

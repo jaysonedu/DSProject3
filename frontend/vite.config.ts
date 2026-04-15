@@ -7,6 +7,10 @@ import {
   CSSOptions,
 } from "vite";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+/** Directory containing this config (frontend/). loadEnv must use this, not process.cwd(), so `pnpm dev-fe` from repo root still picks up frontend/.env.local. */
+const frontendRoot = path.dirname(fileURLToPath(import.meta.url));
 import injectHTML from "vite-plugin-html-inject";
 import childProcess from "child_process";
 import autoprefixer from "autoprefixer";
@@ -331,7 +335,7 @@ function getCssOptions({
 }
 
 export default defineConfig(({ mode }): UserConfig => {
-  const env = loadEnv(mode, process.cwd(), "");
+  const env = loadEnv(mode, frontendRoot, "");
   const useSentry = env["SENTRY"] !== undefined;
   const isDevelopment = mode !== "production";
 
@@ -345,6 +349,9 @@ export default defineConfig(({ mode }): UserConfig => {
   }
 
   return {
+    // Default envDir is `root` (./src), so .env.local next to this config was ignored for
+    // import.meta.env. Point envDir at frontend/ so frontend/.env.local loads (study URL, etc.).
+    envDir: frontendRoot,
     plugins: getPlugins({ isDevelopment, useSentry: useSentry, env }),
     build: getBuildOptions({ enableSourceMaps: useSentry }),
     css: getCssOptions({ isDevelopment }),
