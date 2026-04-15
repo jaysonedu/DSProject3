@@ -8,6 +8,14 @@ import { focusWords } from "../test/test-ui";
 import { isInputElementFocused } from "../input/input-element";
 import * as TestState from "../test/test-state";
 import { isDevEnvironment } from "../utils/env";
+import { DS_PROJECT3_STUDY_ENABLED } from "../experiment/ds-project3-flags";
+
+function studySuppressesDevToasts(): boolean {
+  return (
+    DS_PROJECT3_STUDY_ENABLED &&
+    document.body.classList.contains("ds-project3-study")
+  );
+}
 
 document.addEventListener("keydown", (e) => {
   if (PageTransition.get()) return;
@@ -55,24 +63,28 @@ window.addEventListener("keydown", function (e) {
 
 window.onerror = function (message, url, line, column, error): void {
   if (isDevEnvironment()) {
-    showErrorNotification(error?.message ?? "Undefined message", {
-      customTitle: "DEV: Unhandled error",
-      durationMs: 5000,
-      important: true,
-    });
     console.error({ message, url, line, column, error });
+    if (!studySuppressesDevToasts()) {
+      showErrorNotification(error?.message ?? "Undefined message", {
+        customTitle: "DEV: Unhandled error",
+        durationMs: 5000,
+        important: true,
+      });
+    }
   }
 };
 
 window.onunhandledrejection = function (e): void {
   if (isDevEnvironment()) {
-    showErrorNotification(
-      (e.reason as Error).message ?? e.reason ?? "Undefined message",
-      {
-        customTitle: "DEV: Unhandled rejection",
-        durationMs: 5000,
-        important: true,
-      },
-    );
+    if (!studySuppressesDevToasts()) {
+      showErrorNotification(
+        (e.reason as Error).message ?? e.reason ?? "Undefined message",
+        {
+          customTitle: "DEV: Unhandled rejection",
+          durationMs: 5000,
+          important: true,
+        },
+      );
+    }
   }
 };

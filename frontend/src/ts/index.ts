@@ -48,6 +48,7 @@ import { mountComponents } from "./components/mount";
 import "./ready";
 import { setVersion } from "./states/core";
 import { loadFromLocalStorage } from "./config/lifecycle";
+import { DS_PROJECT3_STUDY_ENABLED } from "./experiment/ds-project3-flags";
 
 import "./input/hotkeys";
 
@@ -71,6 +72,9 @@ Object.defineProperty(window, "Math", {
 });
 
 applyEngineSettings();
+if (DS_PROJECT3_STUDY_ENABLED) {
+  document.body.classList.add("ds-project3-study");
+}
 void loadFromLocalStorage();
 void fetchLatestVersion().then((data) => {
   if (data === null) return;

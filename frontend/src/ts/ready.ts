@@ -7,12 +7,17 @@ import { authPromise } from "./firebase";
 import { animate } from "animejs";
 import { onDOMReady, qs } from "./utils/dom";
 import { isDevEnvironment } from "./utils/env";
+import { DS_PROJECT3_STUDY_ENABLED } from "./experiment/ds-project3-flags";
 import {
   initDsProject3Study,
   isStudyModeActive,
 } from "./experiment/ds-project3-study";
 
 onDOMReady(async () => {
+  if (DS_PROJECT3_STUDY_ENABLED) {
+    document.body.classList.add("ds-project3-study");
+  }
+
   await configLoadPromise;
   await authPromise;
   await initDsProject3Study();

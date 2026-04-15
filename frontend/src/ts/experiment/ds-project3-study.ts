@@ -2,11 +2,13 @@ import { applyConfig } from "../config/lifecycle";
 import { saveFullConfigToLocalStorage } from "../config/persistence";
 import { getInputElement } from "../input/input-element";
 import type { CompletedEvent } from "@monkeytype/schemas/results";
+import { DS_PROJECT3_STUDY_ENABLED } from "./ds-project3-flags";
 
-/** Set to false to restore the stock Monkeytype experience. */
-export const DS_PROJECT3_STUDY_ENABLED = true;
+export { DS_PROJECT3_STUDY_ENABLED };
 
 const LS_VARIANT = "ds3_ab_autocorrect_variant";
+const LS_PARTICIPANT_ID = "ds3_participant_id";
+const SS_EXTERNAL_PID = "ds3_external_participant_id";
 const SS_SESSION_DONE = "ds3_study_session_completed";
 const SS_LAST_RESULT = "ds3_study_last_result";
 const LS_RUN_LOG = "ds3_study_run_log";
@@ -27,13 +29,72 @@ export function getAssignedVariant(): AutocorrectVariant | null {
   return null;
 }
 
-function assignVariant(): AutocorrectVariant {
+/** Anonymous id for this browser; included when posting results to your collector. */
+export function getStudyParticipantId(): string {
+  let id = localStorage.getItem(LS_PARTICIPANT_ID);
+  if (id !== null && id.length > 0) {
+    return id;
+  }
+  id =
+    typeof crypto !== "undefined" && "randomUUID" in crypto
+      ? crypto.randomUUID()
+      : `ds3_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 12)}`;
+  localStorage.setItem(LS_PARTICIPANT_ID, id);
+  return id;
+}
+
+/** Optional Prolific / class id from `?ds3_pid=` or `?participant=`. */
+export function getExternalParticipantId(): string | null {
+  return sessionStorage.getItem(SS_EXTERNAL_PID);
+}
+
+function captureExternalPidFromUrl(): void {
+  try {
+    const q = new URLSearchParams(window.location.search);
+    const pid = q.get("ds3_pid") ?? q.get("participant");
+    if (pid !== null && pid.trim().length > 0) {
+      sessionStorage.setItem(SS_EXTERNAL_PID, pid.trim().slice(0, 256));
+    }
+  } catch {
+    /* ignore */
+  }
+}
+
+function getCollectUrl(): string | null {
+  const u: unknown = import.meta.env["VITE_DS3_COLLECT_URL"];
+  return typeof u === "string" && u.length > 0 ? u : null;
+}
+
+async function postStudyPayload(
+  body: Record<string, unknown>,
+): Promise<boolean> {
+  const url = getCollectUrl();
+  if (url === null) {
+    return false;
+  }
+  try {
+    const res = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+      mode: "cors",
+    });
+    return res.ok;
+  } catch {
+    return false;
+  }
+}
+
+function assignVariant(): {
+  variant: AutocorrectVariant;
+  firstAssign: boolean;
+} {
   const existing = getAssignedVariant();
-  if (existing !== null) return existing;
+  if (existing !== null) return { variant: existing, firstAssign: false };
   const v: AutocorrectVariant =
     Math.random() < 0.5 ? "autocorrect_on" : "autocorrect_off";
   localStorage.setItem(LS_VARIANT, v);
-  return v;
+  return { variant: v, firstAssign: true };
 }
 
 function applyAutocorrectToInput(variant: AutocorrectVariant): void {
@@ -50,7 +111,7 @@ function applyAutocorrectToInput(variant: AutocorrectVariant): void {
 async function applyStudyTypingConfig(): Promise<void> {
   await applyConfig({
     mode: "time",
-    time: 60,
+    time: 30,
     language: "english",
     punctuation: false,
     numbers: false,
@@ -72,7 +133,7 @@ async function applyStudyTypingConfig(): Promise<void> {
 function appendRunLog(entry: Record<string, unknown>): void {
   try {
     const raw = localStorage.getItem(LS_RUN_LOG);
-    const arr = raw ? (JSON.parse(raw) as unknown[]) : [];
+    const arr = raw !== null ? (JSON.parse(raw) as unknown[]) : [];
     arr.push(entry);
     localStorage.setItem(LS_RUN_LOG, JSON.stringify(arr));
   } catch {
@@ -87,16 +148,24 @@ function readLastResultSummary(): {
 } {
   try {
     const raw = sessionStorage.getItem(SS_LAST_RESULT);
-    if (raw) return JSON.parse(raw) as { wpm?: number; acc?: number; variant?: string };
+    if (raw !== null) {
+      return JSON.parse(raw) as {
+        wpm?: number;
+        acc?: number;
+        variant?: string;
+      };
+    }
   } catch {
     /* ignore */
   }
   return {};
 }
 
-function renderCompletedPanel(
-  summary?: { wpm?: number; acc?: number; variant?: string },
-): void {
+function renderCompletedPanel(summary?: {
+  wpm?: number;
+  acc?: number;
+  variant?: string;
+}): void {
   const merged = { ...readLastResultSummary(), ...summary };
   const app = document.getElementById("app");
   if (!app) return;
@@ -112,20 +181,26 @@ function renderCompletedPanel(
   panel.innerHTML = `
     <div class="ds3-study-complete-inner">
       <h1 class="ds3-study-complete-title">Thank you</h1>
-      <p class="ds3-study-complete-text">You have finished this session. Please close the tab or report your result as instructed.</p>
+      <p class="ds3-study-complete-text">You have finished this session. Your final typing statistics are shown below.</p>
       ${
         merged.wpm !== undefined
           ? `<p class="ds3-study-complete-stats">WPM: <strong>${merged.wpm}</strong> · Accuracy: <strong>${merged.acc ?? "—"}%</strong></p>`
           : ""
       }
       ${
-        merged.variant
+        merged.variant !== undefined && merged.variant !== ""
           ? `<p class="ds3-study-complete-stats ds3-study-variant-line">Assigned condition: <strong>${merged.variant === "autocorrect_on" ? "Autocorrect on" : "Autocorrect off"}</strong></p>`
           : ""
       }
-      <p class="ds3-study-complete-hint">To run the study flow again (e.g. for testing), clear site data for this origin or use a private window.</p>
+      <p id="ds3-collection-status" class="ds3-study-collection-status" role="status" aria-live="polite"></p>
+      <p class="ds3-study-complete-hint">To run the study flow again (for testing), clear site data for this origin or use a private window.</p>
     </div>
   `;
+}
+
+function setCollectionStatusMessage(message: string): void {
+  const el = document.getElementById("ds3-collection-status");
+  if (el) el.textContent = message;
 }
 
 function renderConditionBanner(variant: AutocorrectVariant): void {
@@ -135,28 +210,64 @@ function renderConditionBanner(variant: AutocorrectVariant): void {
   el.setAttribute("role", "status");
   el.textContent =
     variant === "autocorrect_on"
-      ? "Study mode: one 60s test · Autocorrect ON (where supported by your device)"
-      : "Study mode: one 60s test · Autocorrect OFF";
+      ? "Study mode: one 30s test · Autocorrect ON (where supported by your device)"
+      : "Study mode: one 30s test · Autocorrect OFF";
   document.body.append(el);
 }
 
 /**
  * Full-screen “session complete” UI (same as after refresh). Call when a valid study run finishes.
  */
-export function showStudySessionCompleteUI(summary: {
-  wpm: number;
-  acc: number;
-  variant: AutocorrectVariant;
-}): void {
+export function showStudySessionCompleteUI(
+  summary: {
+    wpm: number;
+    acc: number;
+    variant: AutocorrectVariant;
+  },
+  completedPayload: CompletedEvent,
+): void {
   document.getElementById("ds3-study-condition")?.remove();
   document.body.classList.add("ds-project3-study-session-done");
   renderCompletedPanel(summary);
+
+  const url = getCollectUrl();
+  if (url === null) {
+    setCollectionStatusMessage(
+      "Results are saved only on this device. If your instructor gave you a study link with a data server, they will provide the correct URL.",
+    );
+    return;
+  }
+
+  setCollectionStatusMessage("Submitting your results to the research server…");
+
+  const body = {
+    event: "completed" as const,
+    variant: summary.variant,
+    participantId: getStudyParticipantId(),
+    externalId: getExternalParticipantId(),
+    wpm: completedPayload.wpm,
+    acc: completedPayload.acc,
+    rawWpm: completedPayload.rawWpm,
+    testDuration: completedPayload.testDuration,
+    mode: completedPayload.mode,
+    mode2: completedPayload.mode2,
+    ts: new Date().toISOString(),
+    userAgent: navigator.userAgent,
+  };
+
+  void postStudyPayload(body).then((ok) => {
+    setCollectionStatusMessage(
+      ok
+        ? "Your results were received. You may close this window."
+        : "We could not reach the research server. Your results are still saved in this browser; contact your instructor if this persists.",
+    );
+  });
 }
 
 export function getStudyRunLog(): unknown[] {
   try {
     const raw = localStorage.getItem(LS_RUN_LOG);
-    return raw ? (JSON.parse(raw) as unknown[]) : [];
+    return raw !== null ? (JSON.parse(raw) as unknown[]) : [];
   } catch {
     return [];
   }
@@ -181,6 +292,7 @@ export function downloadStudyRunLog(): void {
 export async function initDsProject3Study(): Promise<void> {
   if (!DS_PROJECT3_STUDY_ENABLED) return;
 
+  captureExternalPidFromUrl();
   document.body.classList.add("ds-project3-study");
 
   if (isStudySessionComplete()) {
@@ -191,7 +303,18 @@ export async function initDsProject3Study(): Promise<void> {
   }
 
   await applyStudyTypingConfig();
-  const variant = assignVariant();
+  getStudyParticipantId();
+  const { variant, firstAssign } = assignVariant();
+  const collectUrl = getCollectUrl();
+  if (firstAssign && collectUrl !== null) {
+    void postStudyPayload({
+      event: "assigned",
+      variant,
+      participantId: getStudyParticipantId(),
+      externalId: getExternalParticipantId(),
+      ts: new Date().toISOString(),
+    });
+  }
   applyAutocorrectToInput(variant);
   renderConditionBanner(variant);
 
@@ -199,13 +322,17 @@ export async function initDsProject3Study(): Promise<void> {
     console.info(
       "[DS Project 3] Autocorrect A/B variant (stored in localStorage):",
       variant,
+      "participantId:",
+      getStudyParticipantId(),
     );
     const w = window as unknown as {
       ds3ExportStudyRunLog: () => void;
       ds3GetStudyVariant: () => AutocorrectVariant | null;
+      ds3GetParticipantId: () => string;
     };
     w.ds3ExportStudyRunLog = downloadStudyRunLog;
     w.ds3GetStudyVariant = getAssignedVariant;
+    w.ds3GetParticipantId = getStudyParticipantId;
   }
 }
 
@@ -227,6 +354,10 @@ export function onStudyTestFinished(
   if (variant === null) return;
 
   sessionStorage.setItem(SS_SESSION_DONE, "1");
+  const participantId = getStudyParticipantId();
+  const externalId = getExternalParticipantId();
+  const finishedAt = new Date().toISOString();
+
   sessionStorage.setItem(
     SS_LAST_RESULT,
     JSON.stringify({
@@ -235,25 +366,33 @@ export function onStudyTestFinished(
       rawWpm: completed.rawWpm,
       testDuration: completed.testDuration,
       variant,
-      ts: new Date().toISOString(),
+      participantId,
+      externalId,
+      ts: finishedAt,
     }),
   );
 
   appendRunLog({
+    event: "completed",
     variant,
+    participantId,
+    externalId,
     wpm: completed.wpm,
     acc: completed.acc,
     rawWpm: completed.rawWpm,
     testDuration: completed.testDuration,
     mode: completed.mode,
     mode2: completed.mode2,
-    ts: new Date().toISOString(),
+    ts: finishedAt,
     userAgent: navigator.userAgent,
   });
 
-  showStudySessionCompleteUI({
-    wpm: completed.wpm,
-    acc: completed.acc,
-    variant,
-  });
+  showStudySessionCompleteUI(
+    {
+      wpm: completed.wpm,
+      acc: completed.acc,
+      variant,
+    },
+    completed,
+  );
 }

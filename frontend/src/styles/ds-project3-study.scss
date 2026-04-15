@@ -16,6 +16,16 @@
 }
 
 body.ds-project3-study {
+  // TanStack Query devtools (often portaled under body)
+  .tsqd-parent-container {
+    display: none !important;
+  }
+
+  // Solid devtools overlay (portaled)
+  [data-testid="solid-devtools-overlay"] {
+    display: none !important;
+  }
+
   // Shell chrome
   #app > mount[data-component="header"],
   #app > mount[data-component="footer"],
@@ -24,7 +34,8 @@ body.ds-project3-study {
   #ad-vertical-right-wrapper,
   #ad-footer-wrapper,
   #ad-footer-small-wrapper,
-  #barTimerProgress {
+  #barTimerProgress,
+  #commandLineMobileButton {
     display: none !important;
   }
 
@@ -111,6 +122,13 @@ body.ds-project3-study-session-done {
 
   .ds3-study-variant-line {
     font-size: 0.95rem;
+  }
+
+  .ds3-study-collection-status {
+    margin: 1rem 0;
+    line-height: 1.5;
+    font-size: 0.95rem;
+    color: var(--main-color, #d1d0c5);
   }
 
   #ds3-study-condition {

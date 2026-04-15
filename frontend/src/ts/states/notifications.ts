@@ -1,7 +1,15 @@
 import { createStore } from "solid-js/store";
 
 import { CommonResponsesType } from "@monkeytype/contracts/util/api";
+import { DS_PROJECT3_STUDY_ENABLED } from "../experiment/ds-project3-flags";
 import { createErrorMessage } from "../utils/error";
+
+function suppressNotificationsForStudy(): boolean {
+  return (
+    DS_PROJECT3_STUDY_ENABLED &&
+    document.body.classList.contains("ds-project3-study")
+  );
+}
 
 export type NotificationLevel = "error" | "notice" | "success";
 
@@ -116,6 +124,10 @@ export function addNotificationWithLevel(
   level: NotificationLevel,
   options: AddNotificationOptions = {},
 ): void {
+  if (suppressNotificationsForStudy()) {
+    return;
+  }
+
   let details = options.details;
 
   if (options.response !== undefined) {
