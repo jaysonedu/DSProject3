@@ -109,7 +109,7 @@
     "oxlint": "1.59.0",
     "oxlint-tsgolint": "0.20.0",
     "postcss": "8.5.8",
-    "sass": "1.70.0",
+    "sass": "1.101.0",
     "solid-devtools": "0.34.5",
     "solid-js": "1.9.10",
     "subset-font": "2.3.0",
