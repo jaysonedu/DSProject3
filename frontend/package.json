@@ -24,7 +24,7 @@
     "import-tree": "tsx ./scripts/import-tree.ts"
   },
   "dependencies": {
-    "@date-fns/utc": "1.2.0",
+    "@date-fns/utc": "2.1.1",
     "@leonabcd123/modern-caps-lock": "3.0.4",
     "@monkeytype/contracts": "workspace:*",
     "@monkeytype/funbox": "workspace:*",
