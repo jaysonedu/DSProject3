@@ -44,7 +44,7 @@
     "@tanstack/solid-hotkeys": "0.4.2",
     "@tanstack/solid-hotkeys-devtools": "0.4.3",
     "@tanstack/solid-query": "5.90.23",
-    "@tanstack/solid-query-devtools": "5.91.3",
+    "@tanstack/solid-query-devtools": "5.101.4",
     "@tanstack/solid-table": "8.21.3",
     "@ts-rest/core": "3.52.1",
     "animejs": "4.2.2",
