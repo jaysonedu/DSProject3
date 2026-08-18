@@ -21,6 +21,6 @@
   "devDependencies": {
     "nodemon": "3.1.14",
     "oxlint": "1.59.0",
-    "oxlint-tsgolint": "0.20.0"
+    "oxlint-tsgolint": "7.0.2001"
   }
 }
