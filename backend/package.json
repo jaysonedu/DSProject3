@@ -52,7 +52,7 @@
     "simple-git": "3.32.3",
     "string-similarity": "4.0.4",
     "swagger-stats": "0.99.7",
-    "ua-parser-js": "0.7.33",
+    "ua-parser-js": "2.0.10",
     "uuid": "10.0.0",
     "winston": "3.6.0",
     "zod": "3.23.8"
