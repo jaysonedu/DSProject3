@@ -47,7 +47,7 @@
     "@tanstack/solid-query-devtools": "5.91.3",
     "@tanstack/solid-table": "8.21.3",
     "@ts-rest/core": "3.52.1",
-    "animejs": "4.2.2",
+    "animejs": "4.5.0",
     "balloon-css": "1.2.0",
     "canvas-confetti": "1.5.1",
     "chart.js": "3.7.1",
