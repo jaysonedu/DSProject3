@@ -80,7 +80,7 @@
     "@monkeytype/typescript-config": "workspace:*",
     "@solidjs/testing-library": "0.8.10",
     "@tailwindcss/vite": "4.2.1",
-    "@tanstack/eslint-plugin-query": "5.91.4",
+    "@tanstack/eslint-plugin-query": "5.104.3",
     "@testing-library/dom": "10.4.1",
     "@testing-library/jest-dom": "6.9.1",
     "@testing-library/user-event": "14.6.1",
